@@ -9,7 +9,7 @@
     Description:    Identify who the 'key connectors' are among
                     data scientits.
 """
-from DataSciencester_Net import users, friendship_pairs, interests
+from DataSciencester_Net import users, friendship_pairs, interests, salaries_and_tenures
 from pprint import pprint
 from collections import Counter, defaultdict
 
@@ -156,3 +156,65 @@ print()
 #
 # SALARIES AND EXPERIENCE
 #
+
+# Keys are years, values are list of the salaries for each tenure
+salary_by_tenure = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    salary_by_tenure[tenure].append(salary)
+
+print('[OUTPUT] salary_by_tenure:')
+pprint(salary_by_tenure)
+print()
+
+# Keys are years, each vakue is average salary for that tenure
+average_salary_by_tenure = {
+    tenure: sum(salaries) / len(salaries)
+    for tenure, salaries in salary_by_tenure.items()
+}
+
+print('[OUTPUT] average_salary_by_tenure:')
+pprint(average_salary_by_tenure)
+print()
+
+
+def tenure_bucket(tenure):
+    """"""
+    if tenure < 2:
+        return "less than two"
+    elif tenure < 5:
+        return "between two and five"
+    else: 
+        return "more than five"
+
+# Keys are tenure buckets, values are list of salaries to each bucket:
+salary_by_tenure_bucket = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    bucket = tenure_bucket(tenure)
+    salary_by_tenure_bucket[bucket].append(salary)
+
+print('[OUTPUT] salary_by_tenure_bucket:')
+pprint(salary_by_tenure_bucket)
+print()
+
+# Keys are tenure buckets, values are average salary for that bucket
+average_salary_by_bucket = {
+    tenure_bucket: sum(salaries) / len(salaries)
+    for tenure_bucket, salaries in salary_by_tenure_bucket.items()
+}
+print('[OUTPUT] average_salary_by_bucket:')
+pprint(average_salary_by_bucket)
+print()
+
+#
+# TOPICS OF INTEREST
+#
+
+words_and_counts = Counter(word 
+                            for user, interest in interests
+                            for word in interest.lower().split())
+
+print('[OUTPUT] words_and_counts:')
+pprint(words_and_counts.most_common(3))
+print()
